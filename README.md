@@ -128,3 +128,14 @@ func main() {
 We check that the user has provided a command-line argument specifying the network interface to attach the XDP program to. If not, the program exits with a fatal error message.
 We use the network interface name specified by the user to look up the corresponding interface object using the `net.InterfaceByName()` function. If the lookup fails, the program exits with a fatal error message.
 
+```Go
+	// Load pre-compiled programs into the kernel.
+	objs := bpfObjects{}
+	if err := loadBpfObjects(&objs, nil); err != nil {
+		log.Fatalf("loading objects: %s", err)
+	}
+	defer objs.Close()
+```
+This creates an empty __bpfObjects__ struct and then loads pre-compiled eBPF programs into the kernel using the __loadBpfObjects()__ function. If the load fails, the program exits with a fatal error message. If the load succeeds, a defer statement is used to ensure that the __Close()__ method of the __bpfObjects___ struct is called at the end of the function, regardless of whether it returns normally or with an error.
+
+
