@@ -136,6 +136,6 @@ We use the network interface name specified by the user to look up the correspon
 	}
 	defer objs.Close()
 ```
-This creates an empty __bpfObjects__ struct and then loads pre-compiled eBPF programs into the kernel using the __loadBpfObjects()__ function. If the load fails, the program exits with a fatal error message. If the load succeeds, a defer statement is used to ensure that the __Close()__ method of the __bpfObjects___ struct is called at the end of the function, regardless of whether it returns normally or with an error.
+This creates an empty `bpfObjects` struct and then loads pre-compiled eBPF programs into the kernel using the `loadBpfObjects()` function. If the load fails, the program exits with a fatal error message. If the load succeeds, a defer statement is used to ensure that the `Close()` method of the `bpfObjects` struct is called at the end of the function, regardless of whether it returns normally or with an error.
 
 
