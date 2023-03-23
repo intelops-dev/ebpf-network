@@ -8,8 +8,6 @@ The XDP hook (eXpress Data Path) is a hook in the Linux kernel that allows for p
 
 XDP programs are written in C and compiled into eBPF bytecode using the LLVM compiler. The eBPF bytecode is then loaded into the kernel using the bpf system call. Once loaded, the XDP program can be attached to a network interface.
 
-___
-
 ## Cilium ebpf
 
 Cilium is an open-source project that provides a networking and security solution for containerized applications that leverages eBPF technology. The __Cilium eBPF library__ provides a Go interface to the eBPF subsystem, making it easier to write eBPF programs in Go.
@@ -39,13 +37,11 @@ graph RL
         ProgramSpec & MapSpec & btf.Spec
     end
 ```
-___
 
 ## XDP hook
 
  The __XDP hook (eXpress Data Path)__ is a hook in the Linux kernel that allows for packet processing at the earliest possible stage in the networking stack. It provides a low-level interface to packet filtering and manipulation, and is often used for high-performance network processing.
  The XDP hook is one of the hooks that Cilium provides an abstraction for.
-___
 
 ## Cilium ebpf project structure
 
@@ -75,7 +71,7 @@ The "main.go" file is responsible for the user state of the ebpf program. Compil
 
 
 [Read more about bpf2go](https://github.com/cilium/ebpf/tree/master/cmd/bpf2go)
-___
+
 ## Userspace program written in __Go__ using Cilium ebpf library 
 
 Major components you might find in this userspace eBPF program written using the Cilium eBPF library in Go are as follows:
