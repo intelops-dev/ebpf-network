@@ -154,7 +154,24 @@ This creates an empty `bpfObjects` struct and then loads pre-compiled eBPF progr
 ```
 
 `link.AttachXDP()` attaches the XDP program to the specified network interface. It returns a handle to the XDP program that can be used to detach it later. The function takes an `XDPOptions` struct that specifies the program and the network interface. `objs.XdpProgFunc` is the eBPF program's entry point function.
-<p> If an error occurs while attaching the XDP program, the program exits with a fatal error message.
-`defer l.Close()` defers the closing of the XDP program handle until the end of the function.</p>
+<p> If an error occurs while attaching the XDP program, the program exits with a fatal error message.defer l.Close() defers the closing of the XDP program handle until the end of the function.</p>
 
+```Go
+	// Print the contents of the BPF hash map (source IP address -> packet count).
+	ticker := time.NewTicker(1 * time.Second)
+	defer ticker.Stop()
+	for range ticker.C {
+		s, err := formatMapContents(objs.XdpStatsMap)
+		if err != nil {
+			log.Printf("Error reading map: %s", err)
+			continue
+		}
+		log.Printf("Map contents:\n%s", s)
+	}
+}
+```
+This code prints the contents of the __BPF hash map__ to the console every second using a ticker.`time.NewTicker(1 * time.Second)` creates a ticker that will send a message every second.`defer ticker.Stop()` defers the stopping of the ticker until the end of the function.
+The `for range ticker.C` loop receives messages from the ticker channel.
+`formatMapContents()` takes the eBPF map and returns a formatted string of the map's contents.
+If there is an error reading the map, the error message is printed to the console, and the loop continues.
 
