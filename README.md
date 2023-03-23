@@ -82,3 +82,49 @@ Major components you might find in this userspace eBPF program written using the
 1. A helper function formatMapContents() to **format the contents** of the BPF hash map as a string.
 1. **Error handling** for all potential errors, such as failing to load the eBPF program or failing to attach it to the network interface.
 
+```Go
+
+package main
+
+import (
+	"fmt"
+	"log"
+	"net"
+	"os"
+	"strings"
+	"time"
+
+	"github.com/cilium/ebpf"
+	"github.com/cilium/ebpf/link"
+)
+
+```
+Import statements for required Go packages and the Cilium eBPF library and link package.
+
+
+```Go
+
+// $BPF_CLANG and $BPF_CFLAGS are set by the Makefile.
+//go:generate go run github.com/cilium/ebpf/cmd/bpf2go -cc $BPF_CLANG -cflags $BPF_CFLAGS bpf xdp.c -- -I../headers
+
+```
+This part of the code generates Go code that includes the compiled eBPF program as an embedded byte array, which is then used in the main Go program without relying on external files.
+The comment indicates following line is a __Go generate directive__, genertaes Go code that includes the compiled eBPF program, defined in the C source file xdp.c, as an embedded byte array.
+The __$BPF_CLANG__ and __$BPF_CFLAGS__ environment variables are used as parameters for the command, and they are expected to be set by the Makefile. These environment variables specify the C compiler and its flags to use when compiling the eBPF program.
+
+```Go
+func main() {
+	if len(os.Args) < 2 {
+		log.Fatalf("Please specify a network interface")
+	}
+
+	// Look up the network interface by name.
+	ifaceName := os.Args[1]
+	iface, err := net.InterfaceByName(ifaceName)
+	if err != nil {
+		log.Fatalf("lookup network iface %q: %s", ifaceName, err)
+	}
+```
+We check that the user has provided a command-line argument specifying the network interface to attach the XDP program to. If not, the program exits with a fatal error message.
+We use the network interface name specified by the user to look up the corresponding interface object using the <p>net.InterfaceByName()</p> function. If the lookup fails, the program exits with a fatal error message.
+
