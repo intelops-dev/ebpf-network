@@ -154,6 +154,7 @@ This creates an empty `bpfObjects` struct and then loads pre-compiled eBPF progr
 ```
 
 `link.AttachXDP()` attaches the XDP program to the specified network interface. It returns a handle to the XDP program that can be used to detach it later. The function takes an `XDPOptions` struct that specifies the program and the network interface. `objs.XdpProgFunc` is the eBPF program's entry point function.
-<p> If an error occurs while attaching the XDP program, the program exits with a fatal error message.`defer l.Close()` defers the closing of the XDP program handle until the end of the function.</p>
+<p> If an error occurs while attaching the XDP program, the program exits with a fatal error message.
+`defer l.Close()` defers the closing of the XDP program handle until the end of the function.</p>
 
 
