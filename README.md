@@ -108,9 +108,10 @@ Import statements for required Go packages and the Cilium eBPF library and link 
 //go:generate go run github.com/cilium/ebpf/cmd/bpf2go -cc $BPF_CLANG -cflags $BPF_CFLAGS bpf xdp.c -- -I../headers
 
 ```
-This part of the code generates Go code that includes the compiled eBPF program as an embedded byte array, which is then used in the main Go program without relying on external files.
-The comment indicates following line is a __Go generate directive__, genertaes Go code that includes the compiled eBPF program, defined in the C source file xdp.c, as an embedded byte array.
-The __$BPF_CLANG__ and __$BPF_CFLAGS__ environment variables are used as parameters for the command, and they are expected to be set by the Makefile. These environment variables specify the C compiler and its flags to use when compiling the eBPF program.
+* This part of the code generates Go code that includes the compiled eBPF program as an embedded byte array, which is then used in the main Go program without relying on external files.
+* The comment indicates following line is a __Go generate directive__, genertaes Go code that includes the compiled eBPF program, defined in the C source file xdp.c, as an embedded byte array.
+* The __$BPF_CLANG__ and __$BPF_CFLAGS__ environment variables are used as parameters for the command, and they are expected to be set by the Makefile.
+* These environment variables specify the C compiler and its flags to use when compiling the eBPF program.
 
 ```Go
 func main() {
@@ -125,8 +126,8 @@ func main() {
 		log.Fatalf("lookup network iface %q: %s", ifaceName, err)
 	}
 ```
-We check that the user has provided a command-line argument specifying the network interface to attach the XDP program to. If not, the program exits with a fatal error message.
-We use the network interface name specified by the user to look up the corresponding interface object using the `net.InterfaceByName()` function. If the lookup fails, the program exits with a fatal error message.
+* We check that the user has provided a command-line argument specifying the network interface to attach the XDP program to. If not, the program exits with a fatal error message.
+* We use the network interface name specified by the user to look up the corresponding interface object using the `net.InterfaceByName()` function. If the lookup fails, the program exits with a fatal error message.
 
 ```Go
 	// Load pre-compiled programs into the kernel.
@@ -136,7 +137,9 @@ We use the network interface name specified by the user to look up the correspon
 	}
 	defer objs.Close()
 ```
-This creates an empty `bpfObjects` struct and then loads pre-compiled eBPF programs into the kernel using the `loadBpfObjects()` function. If the load fails, the program exits with a fatal error message. If the load succeeds, a `defer` statement is used to ensure that the `Close()` method of the `bpfObjects` struct is called at the end of the function, regardless of whether it returns normally or with an error.
+* This creates an empty `bpfObjects` struct and then loads pre-compiled eBPF programs into the kernel using the `loadBpfObjects()` function. 
+* If the load fails, the program exits with a fatal error message. 
+* If the load succeeds, a `defer` statement is used to ensure that the `Close()` method of the `bpfObjects` struct is called at the end of the function, regardless of whether it returns normally or with an error.
 
 ```Go
 	// Attach the program.
@@ -153,8 +156,9 @@ This creates an empty `bpfObjects` struct and then loads pre-compiled eBPF progr
 	log.Printf("Press Ctrl-C to exit and remove the program")
 ```
 
-`link.AttachXDP()` attaches the XDP program to the specified network interface. It returns a handle to the XDP program that can be used to detach it later. The function takes an `XDPOptions` struct that specifies the program and the network interface. `objs.XdpProgFunc` is the eBPF program's entry point function.
-<p> If an error occurs while attaching the XDP program, the program exits with a fatal error message.defer l.Close() defers the closing of the XDP program handle until the end of the function.</p>
+* `link.AttachXDP()` attaches the XDP program to the specified network interface. It returns a handle to the XDP program that can be used to detach it later.
+* The function takes an `XDPOptions` struct that specifies the program and the network interface. `objs.XdpProgFunc` is the eBPF program's entry point function.
+* If an error occurs while attaching the XDP program, the program exits with a fatal error message.defer l.Close() defers the closing of the XDP program handle until the end of the function.
 
 ```Go
 	// Print the contents of the BPF hash map (source IP address -> packet count).
@@ -170,10 +174,11 @@ This creates an empty `bpfObjects` struct and then loads pre-compiled eBPF progr
 	}
 }
 ```
-This code prints the contents of the __BPF hash map__ to the console every second using a ticker.`time.NewTicker(1 * time.Second)` creates a ticker that will send a message every second.`defer ticker.Stop()` defers the stopping of the ticker until the end of the function.
-The `for range ticker.C` loop receives messages from the ticker channel.
-`formatMapContents()` takes the eBPF map and returns a formatted string of the map's contents.
-If there is an error reading the map, the error message is printed to the console, and the loop continues.
+* This code prints the contents of the __BPF hash map__ to the console every second using a ticker.
+* `time.NewTicker(1 * time.Second)` creates a ticker that will send a message every second.
+* `defer ticker.Stop()` defers the stopping of the ticker until the end of the function.
+* The `for range ticker.C` loop receives messages from the ticker channel.
+* `formatMapContents()` takes the eBPF map and returns a formatted string of the map's contents.If there is an error reading the map, the error message is printed to the console, and the loop continues.
 
 ```Go
 func formatMapContents(m *ebpf.Map) (string, error) {
@@ -194,13 +199,21 @@ func formatMapContents(m *ebpf.Map) (string, error) {
 
 This takes an eBPF map as input, iterates over the key-value pairs in the map, and returns a string representation of the map's contents. Here's what each line of the function does:
 
-`func formatMapContents(m *ebpf.Map) (string, error) {` defines the function with a parameter `m` representing the eBPF map to be formatted and a return type of a string and an error.
+* `func formatMapContents(m *ebpf.Map) (string, error) {` defines the function with a parameter `m` representing the eBPF map to be formatted and a return type of a string and an error.
+	* `var (` defines multiple variables in a single line.
+		* `sb strings.Builder` declares a `strings.Builder` variable named `sb`. This variable is used to build up the formatted string.
+		* `key []byte` declares a `[]byte` variable named `key`. This variable is used to store the key of the current key-value pair during iteration.
+		* `val uint32` declares a `uint32` variable named `val`. This variable is used to store the value of the current key-value pair during iteration.
 
-`var (` defines multiple variables in a single line.`sb strings.Builder` declares a `strings.Builder` variable named `sb`. This variable is used to build up the formatted string.`key []byte` declares a `[]byte` variable named `key`. This variable is used to store the key of the current key-value pair during iteration.`val uint32` declares a `uint32` variable named `val`. This variable is used to store the value of the current key-value pair during iteration.
-
-`iter := m.Iterate()` creates a new iterator for the given eBPF map `m`. The `Iterate` method returns an iterator object which is used to iterate over the map's key-value pairs.`for iter.Next(&key, &val) {` starts a loop that iterates over the map's key-value pairs. The `Next` method of the iterator object returns `true` if there are more key-value pairs to be iterated over, and assigns the current key and value to the variables passed as pointers to it.
-`sourceIP := net.IP(key)` converts the `[]byte` key into an `net.IP` object representing the IPv4 source address in network byte order. This is necessary because the eBPF map stores IP addresses as byte arrays.
-`packetCount := val` stores the value of the current key-value pair in the `packetCount` variable.
-`sb.WriteString(fmt.Sprintf("\t%s => %d\n", sourceIP, packetCount))` formats the current key-value pair as a string and writes it to the `sb` string builder.`return sb.String(), iter.Err()` returns the final string representation of the eBPF map's contents as well as any error that occurred during iteration. The `String` method of the `strings.Builder` object returns the built string, and the `Err` method of the iterator object returns any error that occurred during iteration.
+	* `iter := m.Iterate()` creates a new iterator for the given eBPF map `m`. The `Iterate` method returns an iterator object which is used to iterate over the map's key-value pairs.
+	* `for iter.Next(&key, &val) {` starts a loop that iterates over the map's key-value pairs.
+		*  The `Next` method of the iterator object returns `true` if there are more key-value pairs to be iterated over, and assigns the current key and value to the variables passed as pointers to it.
+		* `sourceIP := net.IP(key)` converts the `[]byte` key into an `net.IP` object representing the IPv4 source address in network byte order. This is necessary because the eBPF map stores IP addresses as byte arrays.
+		* `packetCount := val` stores the value of the current key-value pair in the `packetCount` variable.
+		* `sb.WriteString(fmt.Sprintf("\t%s => %d\n", sourceIP, packetCount))` formats the current key-value pair as a string and writes it to the `sb` string builder.
+	* `return sb.String(), iter.Err()` returns the final string representation of the eBPF map's contents as well as any error that occurred during iteration. 
+	* The `String` method of the `strings.Builder` object returns the built string, and the `Err` method of the iterator object returns any error that occurred during iteration.
 
 ## Kernel Space eBPF program
+
+
