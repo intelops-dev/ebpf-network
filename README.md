@@ -194,7 +194,9 @@ func formatMapContents(m *ebpf.Map) (string, error) {
 
 This takes an eBPF map as input, iterates over the key-value pairs in the map, and returns a string representation of the map's contents. Here's what each line of the function does:
 
-`func formatMapContents(m *ebpf.Map) (string, error) {` defines the function with a parameter `m` representing the eBPF map to be formatted and a return type of a string and an error.`var (` defines multiple variables in a single line.
+`func formatMapContents(m *ebpf.Map) (string, error) {` defines the function with a parameter `m` representing the eBPF map to be formatted and a return type of a string and an error.
+
+`var (` defines multiple variables in a single line.
 `sb strings.Builder` declares a `strings.Builder` variable named `sb`. This variable is used to build up the formatted string.
 `key []byte` declares a `[]byte` variable named `key`. This variable is used to store the key of the current key-value pair during iteration.
 `val uint32` declares a `uint32` variable named `val`. This variable is used to store the value of the current key-value pair during iteration.
