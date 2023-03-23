@@ -202,3 +202,5 @@ This takes an eBPF map as input, iterates over the key-value pairs in the map, a
 `sourceIP := net.IP(key)` converts the `[]byte` key into an `net.IP` object representing the IPv4 source address in network byte order. This is necessary because the eBPF map stores IP addresses as byte arrays.
 `packetCount := val` stores the value of the current key-value pair in the `packetCount` variable.
 `sb.WriteString(fmt.Sprintf("\t%s => %d\n", sourceIP, packetCount))` formats the current key-value pair as a string and writes it to the `sb` string builder.`return sb.String(), iter.Err()` returns the final string representation of the eBPF map's contents as well as any error that occurred during iteration. The `String` method of the `strings.Builder` object returns the built string, and the `Err` method of the iterator object returns any error that occurred during iteration.
+
+## Kernel Space eBPF program
