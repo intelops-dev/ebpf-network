@@ -136,6 +136,24 @@ We use the network interface name specified by the user to look up the correspon
 	}
 	defer objs.Close()
 ```
-This creates an empty `bpfObjects` struct and then loads pre-compiled eBPF programs into the kernel using the `loadBpfObjects()` function. If the load fails, the program exits with a fatal error message. If the load succeeds, a defer statement is used to ensure that the `Close()` method of the `bpfObjects` struct is called at the end of the function, regardless of whether it returns normally or with an error.
+This creates an empty `bpfObjects` struct and then loads pre-compiled eBPF programs into the kernel using the `loadBpfObjects()` function. If the load fails, the program exits with a fatal error message. If the load succeeds, a `defer` statement is used to ensure that the `Close()` method of the `bpfObjects` struct is called at the end of the function, regardless of whether it returns normally or with an error.
+
+```Go
+	// Attach the program.
+	l, err := link.AttachXDP(link.XDPOptions{
+		Program:   objs.XdpProgFunc,
+		Interface: iface.Index,
+	})
+	if err != nil {
+		log.Fatalf("could not attach XDP program: %s", err)
+	}
+	defer l.Close()
+	
+	log.Printf("Attached XDP program to iface %q (index %d)", iface.Name, iface.Index)
+	log.Printf("Press Ctrl-C to exit and remove the program")
+```
+
+`link.AttachXDP()` attaches the XDP program to the specified network interface. It returns a handle to the XDP program that can be used to detach it later. The function takes an `XDPOptions` struct that specifies the program and the network interface. `objs.XdpProgFunc` is the eBPF program's entry point function.
+<p> If an error occurs while attaching the XDP program, the program exits with a fatal error message.`defer l.Close()` defers the closing of the XDP program handle until the end of the function.</p>
 
 
