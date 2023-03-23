@@ -175,3 +175,40 @@ The `for range ticker.C` loop receives messages from the ticker channel.
 `formatMapContents()` takes the eBPF map and returns a formatted string of the map's contents.
 If there is an error reading the map, the error message is printed to the console, and the loop continues.
 
+```Go
+func formatMapContents(m *ebpf.Map) (string, error) {
+	var (
+		sb  strings.Builder
+		key []byte
+		val uint32
+	)
+	iter := m.Iterate()
+	for iter.Next(&key, &val) {
+		sourceIP := net.IP(key) // IPv4 source address in network byte order.
+		packetCount := val
+		sb.WriteString(fmt.Sprintf("\t%s => %d\n", sourceIP, packetCount))
+	}
+	return sb.String(), iter.Err()
+
+```
+
+This takes an eBPF map as input, iterates over the key-value pairs in the map, and returns a string representation of the map's contents. Here's what each line of the function does:
+
+`func formatMapContents(m *ebpf.Map) (string, error) {` defines the function with a parameter `m` representing the eBPF map to be formatted and a return type of a string and an error.
+`var (` defines multiple variables in a single line.
+
+`sb strings.Builder` declares a `strings.Builder` variable named `sb`. This variable is used to build up the formatted string.
+
+`key []byte` declares a `[]byte` variable named `key`. This variable is used to store the key of the current key-value pair during iteration.
+
+`val uint32` declares a `uint32` variable named `val`. This variable is used to store the value of the current key-value pair during iteration.
+
+`iter := m.Iterate()` creates a new iterator for the given eBPF map `m`. The `Iterate` method returns an iterator object which is used to iterate over the map's key-value pairs.
+
+`for iter.Next(&key, &val) {` starts a loop that iterates over the map's key-value pairs. The `Next` method of the iterator object returns `true` if there are more key-value pairs to be iterated over, and assigns the current key and value to the variables passed as pointers to it.
+
+`sourceIP := net.IP(key)` converts the `[]byte` key into an `net.IP` object representing the IPv4 source address in network byte order. This is necessary because the eBPF map stores IP addresses as byte arrays.
+
+`packetCount := val` stores the value of the current key-value pair in the `packetCount` variable.
+
+`sb.WriteString(fmt.Sprintf("\t%s => %d\n", sourceIP, packetCount))` formats the current key-value pair as a string and writes it to the `sb` string builder.`return sb.String(), iter.Err()` returns the final string representation of the eBPF map's contents as well as any error that occurred during iteration. The `String` method of the `strings.Builder` object returns the built string, and the `Err` method of the iterator object returns any error that occurred during iteration.
