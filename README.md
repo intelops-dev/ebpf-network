@@ -126,5 +126,5 @@ func main() {
 	}
 ```
 We check that the user has provided a command-line argument specifying the network interface to attach the XDP program to. If not, the program exits with a fatal error message.
-We use the network interface name specified by the user to look up the corresponding interface object using the <p>net.InterfaceByName()</p> function. If the lookup fails, the program exits with a fatal error message.
+We use the network interface name specified by the user to look up the corresponding interface object using the `net.InterfaceByName()` function. If the lookup fails, the program exits with a fatal error message.
 
