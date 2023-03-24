@@ -240,3 +240,42 @@ This specifies the license for the program.
 	
 Note : In Linux kernel programming and eBPF programming, the **__license** variable is used to specify the license under which the code is distributed. The Linux kernel is distributed under the GNU GPL license, but some parts of it may be licensed under other open source licenses, such as the MIT license. This line is used to indicate that the eBPF code in question is dual-licensed under both the MIT and GPL licenses.
 
+```C
+#define MAX_MAP_ENTRIES 16
+```
+This defines the maximum number of entries that the LRU hash map can hold.
+
+
+```C
+/* Define an LRU hash map for storing packet count by source IPv4 address */
+struct {
+	__uint(type, BPF_MAP_TYPE_LRU_HASH);
+	__uint(max_entries, MAX_MAP_ENTRIES);
+	__type(key, __u32);   // source IPv4 address
+	__type(value, __u32); // packet count
+} xdp_stats_map SEC(".maps");
+
+```
+This is defining an LRU hash map data structure called xdp_stats_map that will be stored in the maps section of the compiled BPF program.
+```
+The following configuration attributes are needed when creating the eBPF map:
+
+union bpf_attr {
+ struct { /* anonymous struct used by BPF_MAP_CREATE command */
+        __u32   map_type;       /* one of enum bpf_map_type */
+        __u32   key_size;       /* size of key in bytes */
+        __u32   value_size;     /* size of value in bytes */
+        __u32   max_entries;    /* max number of entries in a map */
+        __u32   map_flags;      /* prealloc or not */
+ };
+}
+```
+[Learn more about different types of eBPF maps and how to create them](https://prototype-kernel.readthedocs.io/en/latest/bpf/ebpf_maps_types.html#types-of-ebpf-maps)
+
+*  `struct { ... } xdp_stats_map` - Defines a structure named xdp_stats_map.
+* `__uint(type, BPF_MAP_TYPE_LRU_HASH);` - Sets the type field of the structure to BPF_MAP_TYPE_LRU_HASH, indicating that this is a hash map with least-recently-used eviction policy.
+* `__uint(max_entries, MAX_MAP_ENTRIES);` - Sets the max_entries field of the structure to the maximum number of entries that the hash map can hold. MAX_MAP_ENTRIES is a preprocessor macro that is defined elsewhere in the program.
+* `__type(key, __u32);` - Sets the key field of the structure to the data type used as the key in the hash map. In this case, it's a 32-bit unsigned integer (__u32) representing the source IPv4 address.
+* `__type(value, __u32);` - Sets the value field of the structure to the data type used as the value in the hash map. In this case, it's also a 32-bit unsigned integer (__u32) representing the packet count.
+* `SEC(".maps")` - Sets the section in which the xdp_stats_map structure will be stored when the BPF program is compiled. In this case, it will be stored in the maps section, which is reserved for BPF maps.
+
