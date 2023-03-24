@@ -234,7 +234,9 @@ char __license[] SEC("license") = "Dual MIT/GPL";
 ```
 
 This specifies the license for the program.
+
 	* This line declares a character array named `__license` and assigns it a value of `"Dual MIT/GPL"`.
 	* The `SEC("license")` attribute attached to the declaration is used by the eBPF verifier to place this data into a specific section of the eBPF object file. In this case, the license section.
+	
 Note : In Linux kernel programming and eBPF programming, the **__license** variable is used to specify the license under which the code is distributed. The Linux kernel is distributed under the GNU GPL license, but some parts of it may be licensed under other open source licenses, such as the MIT license. This line is used to indicate that the eBPF code in question is dual-licensed under both the MIT and GPL licenses.
 
