@@ -216,4 +216,19 @@ This takes an eBPF map as input, iterates over the key-value pairs in the map, a
 
 ## Kernel Space eBPF program
 
+```Go
+//go:build ignore
+```
+This is a build constraint for Go. It specifies that this file should be ignored by the Go build system.
+
+```C
+#include "bpf_endian.h"
+#include "common.h"
+```
+Header files that provide some utility functions and macros that are used in the program  defined in the Cilium eBPF library.
+
+* bpf_endian.h: This header file defines macros for converting between host and network byte order. It is used to ensure that the program works correctly on different endianness architectures (either big-endian or little-endian).
+* common.h: This header file contains common definitions and macros used by the program, such as the Ethernet protocol (ETH_P_IP),XDP pass/fail return codes (XDP_PASS and XDP_DROP), including macro definitions for BPF_MAP_TYPE_LRU_HASH
+
+
 
