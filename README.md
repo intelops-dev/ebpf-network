@@ -326,10 +326,20 @@ if (!pkt_count) {
 	__sync_fetch_and_add(pkt_count, 1);
 }
 ```
-* If the packet is an IPv4 packet, this block of code uses the bpf_map_lookup_elem function to look up the packet count for the source IP address in the `xdp_stats_map` hash map. 
+* If the packet is an IPv4 packet, this block of code uses the `bpf_map_lookup_elem` function to look up the packet count for the source IP address in the `xdp_stats_map` hash map. 
 * If there is no entry in the map for the IP address, the program inserts a new entry with an initial packet count of 1 using the `bpf_map_update_elem` function.
 * If there is already an entry in the map for the IP address, the program increments the packet count atomically using the `__sync_fetch_and_add` built-in function.
 
+```C
+done:
+	// Try changing this to XDP_DROP and see what happens!
+	return XDP_PASS;
+}
+```
+* This block of code is the end of the XDP program. 
+* If the packet is not an IPv4 packet, the program jumps to the done label and returns `XDP_PASS`, indicating that the packet should be passed through to the next program in the chain. 
+* If the packet is an IPv4 packet, the program increments the packet count and also returns `XDP_PASS`.
+*  By default, `XDP_PASS` indicates that the packet should be passed through to the next program in the chain, it can be changed to `XDP_DROP` to drop the packet.
 
 
 
