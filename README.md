@@ -44,7 +44,6 @@ graph RL
 
 ## Cilium ebpf project structure
 
-<!-- Code Blocks -->
 ```
 $tree xdp
 xdp
@@ -393,28 +392,23 @@ go mod tidy
 ```
 This will update the go.sum file with the latest checksums for all the modules used in your project.
 
-## headers
+## Headers
 
 These are the headers provided by Cilium ebpf library.
 
 * `bpf_helpers.h`: Defines helper functions provided by the kernel to eBPF programs, such as map lookup and modification, packet I/O operations, and synchronization primitives.
-
 * `bpf_endian.h`: Provides conversion functions for different endianness of the data, as the eBPF program runs on a different endianness than the user space program.
-
 * `bpf_core_read.h`: Provides functions for reading kernel data structures in eBPF programs, such as the sk_buff structure.
-
 * `bpf_core_write.h`: Provides functions for writing to kernel data structures in eBPF programs, such as setting the return value of a system call.
-
 * `bpf_debug.h`: Defines debugging helpers for eBPF programs, such as printing data and map contents.
-
 * `bpf_net_helpers.h`: Provides helper functions for network-related tasks, such as TCP connection tracking and DNS lookup.
-
 * `bpf_time_helpers.h`: Provides helper functions for timestamp and time conversion.
 
 These headers are included in the Cilium eBPF library and can be used in eBPF C programs to interact with the kernel and perform various tasks.
 
+## xdp
 
-
+[Refer](Cilium ebpf project structure)
 
 
 
