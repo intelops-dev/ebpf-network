@@ -287,8 +287,23 @@ This is a C macro that tells the eBPF compiler that this function should be comp
 ```C
 int xdp_prog_func(struct xdp_md *ctx) {
 ```
-This is the definition of the XDP program. It takes a single argument **struct xdp_md *ctx** which contains metadata about the received packet.
+This is the definition of the XDP program. It takes a single argument __struct xdp_md *ctx__ which contains metadata about the received packet.
+The parameter struct xdp_md *ctx is a pointer to a metadata structure that contains information about the incoming packet that the XDP program is processing.
+This metadata structure, xdp_md, is defined in the [/include/uapi/linux/bpf.h](https://elixir.bootlin.com/linux/latest/source/include/uapi/linux/bpf.h) header file and contains various fields, such as pointers to the start and end of the packet data, the incoming interface index, and the packet's hardware headers.
 
+```C
+struct xdp_md {
+	__u32 data;
+	__u32 data_end;
+	__u32 data_meta;
+	/* Below access go through struct xdp_rxq_info */
+	__u32 ingress_ifindex; /* rxq->dev->ifindex */
+	__u32 rx_queue_index;  /* rxq->queue_index  */
+
+	__u32 egress_ifindex;  /* txq->dev->ifindex */
+};
+
+```
 
 
 
