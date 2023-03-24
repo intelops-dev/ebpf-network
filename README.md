@@ -270,12 +270,27 @@ union bpf_attr {
  };
 }
 ```
-[Learn more about different types of eBPF maps and how to create them](https://prototype-kernel.readthedocs.io/en/latest/bpf/ebpf_maps_types.html#types-of-ebpf-maps)
-
-*  `struct { ... } xdp_stats_map` - Defines a structure named xdp_stats_map.
+* `struct { ... } xdp_stats_map` - Defines a structure named xdp_stats_map.
 * `__uint(type, BPF_MAP_TYPE_LRU_HASH);` - Sets the type field of the structure to BPF_MAP_TYPE_LRU_HASH, indicating that this is a hash map with least-recently-used eviction policy.
 * `__uint(max_entries, MAX_MAP_ENTRIES);` - Sets the max_entries field of the structure to the maximum number of entries that the hash map can hold. MAX_MAP_ENTRIES is a preprocessor macro that is defined elsewhere in the program.
 * `__type(key, __u32);` - Sets the key field of the structure to the data type used as the key in the hash map. In this case, it's a 32-bit unsigned integer (__u32) representing the source IPv4 address.
 * `__type(value, __u32);` - Sets the value field of the structure to the data type used as the value in the hash map. In this case, it's also a 32-bit unsigned integer (__u32) representing the packet count.
 * `SEC(".maps")` - Sets the section in which the xdp_stats_map structure will be stored when the BPF program is compiled. In this case, it will be stored in the maps section, which is reserved for BPF maps.
+
+[Learn more about different types of eBPF maps and how to create them](https://prototype-kernel.readthedocs.io/en/latest/bpf/ebpf_maps_types.html#types-of-ebpf-maps)
+
+```C
+SEC("xdp")
+```
+This is a C macro that tells the eBPF compiler that this function should be compiled as an __XDP program__. xdp is the name of the section where this program will be loaded.
+
+```C
+int xdp_prog_func(struct xdp_md *ctx) {
+```
+This is the definition of the XDP program. It takes a single argument **struct xdp_md *ctx** which contains metadata about the received packet.
+
+
+
+
+
 
