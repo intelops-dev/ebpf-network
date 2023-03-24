@@ -14,14 +14,11 @@ Cilium is an open-source project that provides a networking and security solutio
 
 The Cilium eBPF library is a Go library that provides abstractions over eBPF programs and maps, as well as helpers for loading and attaching eBPF programs to various hooks in the Linux kernel.
 
-[Cilium ebpf](https://github.com/cilium/ebpf)
+[Refer Cilium ebpf repository](https://github.com/cilium/ebpf)
 
-[Documentation](https://pkg.go.dev/github.com/cilium/ebpf)
+[Refer ebpf Official Documentation ](https://pkg.go.dev/github.com/cilium/ebpf)
 
 ### Architecture of library
-
-[Refer for architecture](https://github.com/cilium/ebpf/blob/master/ARCHITECTURE.md)
-
 ```mermaid
 graph RL
     Program --> ProgramSpec --> ELF
@@ -37,6 +34,8 @@ graph RL
         ProgramSpec & MapSpec & btf.Spec
     end
 ```
+[Refer for architecture](https://github.com/cilium/ebpf/blob/master/ARCHITECTURE.md)
+
 
 ## XDP hook
 
@@ -230,5 +229,13 @@ Header files that provide some utility functions and macros that are used in the
 * bpf_endian.h: This header file defines macros for converting between host and network byte order. It is used to ensure that the program works correctly on different endianness architectures (either big-endian or little-endian).
 * common.h: This header file contains common definitions and macros used by the program, such as the Ethernet protocol (ETH_P_IP),XDP pass/fail return codes (XDP_PASS and XDP_DROP), including macro definitions for BPF_MAP_TYPE_LRU_HASH
 
+```C
+char __license[] SEC("license") = "Dual MIT/GPL";
+``
 
+
+This specifies the license for the program.
+	* This line declares a character array named `__license` and assigns it a value of `"Dual MIT/GPL"`.
+	* The `SEC("license")` attribute attached to the declaration is used by the eBPF verifier to place this data into a specific section of the eBPF object file. In this case, the license section.
+Note : In Linux kernel programming and eBPF programming, the ____license variable__ is used to specify the license under which the code is distributed. The Linux kernel is distributed under the GNU GPL license, but some parts of it may be licensed under other open source licenses, such as the MIT license. This line is used to indicate that the eBPF code in question is dual-licensed under both the MIT and GPL licenses.
 
