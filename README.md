@@ -302,8 +302,38 @@ struct xdp_md {
 
 	__u32 egress_ifindex;  /* txq->dev->ifindex */
 };
+```
+The XDP program is a program that runs in the kernel space of the operating system and is executed when an incoming packet is received by the network interface card. The XDP program processes the packet, and then either forwards it to the next network stack layer, or drops it.
+
+```C
+	__u32 ip;
+	if (!parse_ip_src_addr(ctx, &ip)) {
+		// Not an IPv4 packet, so don't count it.
+		goto done;
+	}
+```
+This block of code attempts to parse the source IP address from the received packet using the parse_ip_src_addr function. If the function returns 0, it means that the packet is not an IPv4 packet, so the program skips to the end of the function using a goto statement.
 
 ```
+__u32 *pkt_count = bpf_map_lookup_elem(&xdp_stats_map, &ip);
+if (!pkt_count) {
+	// No entry in the map for this IP address yet, so set the initial value to 1.
+	__u32 init_pkt_count = 1;
+	bpf_map_update_elem(&xdp_stats_map, &ip, &init_pkt_count, BPF_ANY);
+} else {
+	// Entry already exists for this IP address,
+	// so increment it atomically using an LLVM built-in.
+	__sync_fetch_and_add(pkt_count, 1);
+}
+```
+* If the packet is an IPv4 packet, this block of code uses the bpf_map_lookup_elem function to look up the packet count for the source IP address in the `xdp_stats_map` hash map. 
+* If there is no entry in the map for the IP address, the program inserts a new entry with an initial packet count of 1 using the `bpf_map_update_elem` function.
+* If there is already an entry in the map for the IP address, the program increments the packet count atomically using the `__sync_fetch_and_add` built-in function.
+
+
+
+
+
 
 
 
