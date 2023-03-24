@@ -408,9 +408,57 @@ These headers are included in the Cilium eBPF library and can be used in eBPF C 
 
 ## xdp
 
-[Refer](#cilium-ebpf-project-structure)
+[Refer Cilium ebpf project structure](#cilium-ebpf-project-structure)
 
+```
+$tree xdp
+xdp
+|----bpf_bpfeb.go
+|----bpf_bpfeb.o
+|----bpf_bpfel.go
+|----bpf_bpfel.o
+|----main.go
+|____xdp.c    
 
+0 dir,6 files
+```
+These files are part of the Cilium eBPF library and are used to compile, load and execute eBPF programs within the Cilium datapath.The two binary formats (bpfeb and bpfel) are used to represent eBPF bytecode in different endianness, depending on the target architecture.
 
+* `bpf_bpfeb.go` and `bpf_bpfeb.o` are related to the big-endian eBPF (bpfeb) binary format. `bpf_bpfeb.go` is the Go language binding for the bpfeb binary format, while `bpf_bpfeb.o` is the actual binary file that contains the compiled eBPF bytecode in the bpfeb format.
+
+* `bpf_bpfel.go` and `bpf_bpfel.o` are related to the little-endian eBPF (bpfel) binary format. `bpf_bpfel.go` is the Go language binding for the bpfel binary format, while `bpf_bpfel.o` is the actual binary file that contains the compiled eBPF bytecode in the bpfel format.
+
+# How to run
+
+```bash
+sudo -s
+export BPF_CLANG=clang
+go build
+```
+
+`ip link` is a command in Linux used to display and manage network interfaces.
+When used without any arguments, the `ip link` command displays a list of available network interfaces on the system along with their status, state, and hardware addresses
+
+Here is an example output of the `ip link` command:
+
+![image](https://user-images.githubusercontent.com/128127818/227661937-112cbe58-ae45-457c-b600-a4920b98d169.png)
+
+In this example, `lo` and `wlp0s20f3` are the network interfaces on the system. 
+
+Run the following command, note the network interface in your system
+
+```bash
+ip link
+```
+
+Execute the program 
+
+```bash
+./xdp wlp0s20f3 
+```
+
+Expected Output:
+
+![image](https://user-images.githubusercontent.com/128127818/227663038-0701842a-fe0e-4230-a2bc-fcb1880c2c7a.png)
 
 
