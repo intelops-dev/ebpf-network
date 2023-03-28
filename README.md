@@ -156,6 +156,24 @@ func main() {
 
 * `link.AttachXDP()` attaches the XDP program to the specified network interface. It returns a handle to the XDP program that can be used to detach it later.
 * The function takes an `XDPOptions` struct that specifies the program and the network interface. `objs.XdpProgFunc` is the eBPF program's entry point function.
+* Definiton of [XDPOptions struct](https://github.com/cilium/ebpf/blob/03191fabe827e5bc5ec4dbccd97005ea771e38d5/link/xdp.go)
+
+```Go
+type XDPOptions struct {
+	// Program must be an XDP BPF program.
+	Program *ebpf.Program
+
+	// Interface is the interface index to attach program to.
+	Interface int
+
+	// Flags is one of XDPAttachFlags (optional).
+	//
+	// Only one XDP mode should be set, without flag defaults
+	// to driver/generic mode (best effort).
+	Flags XDPAttachFlags
+}
+```
+
 * If an error occurs while attaching the XDP program, the program exits with a fatal error message.defer l.Close() defers the closing of the XDP program handle until the end of the function.
 
 ```Go
